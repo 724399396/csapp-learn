@@ -1,8 +1,8 @@
-<<<<<<< HEAD
 # Prerequisites
 *.d
 
 # Object files
+**/*.o
 *.o
 *.ko
 *.obj
@@ -52,5 +52,9 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
+**/a.out
 a.out
 *~
+
+# Assembly
+*.s
