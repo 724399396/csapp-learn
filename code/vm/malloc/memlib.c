@@ -1,3 +1,7 @@
+#include "csapp.h"
+
+#define MAX_HEAP (20*(1<<20))
+
 /* Private global variables */
 static char *mem_heap; /* Points to first type of heap */
 static char *mem_brk;  /* Points to last byte of heap plus 1 */
