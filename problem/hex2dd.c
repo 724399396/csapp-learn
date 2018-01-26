@@ -1,30 +1,18 @@
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+#include "csapp.h"
 
 int main(int argc, char **argv)
 {
+  struct in_addr inaddr; /* addr in network byte order */
+  unsigned int addr;     /* addr in host byte order */
+
   if (argc != 2) {
-    printf("usage: hex2dd hex\n");
-    exit(0);
-  }
-  if (strlen(argv[1]) != 10) {
-    printf("please correct input format %zu\n", strlen(argv[1]));
+    fprintf(stderr, "usage: %s <hex number>\n", argv[0]);
     exit(0);
   }
 
-  int i;
-  char str[5];
-  char *prefix = "0x";
-  for (i = 0; i < 4; i++) {
-    memcpy(str, prefix, 2);
-    memcpy(str+2, argv[1]+2+2*i, 2);
-    long decimal = strtol(str, NULL, 16);
-    printf("%zu", decimal);
-    if (i != 3) {
-      printf(".");
-    } else {
-      printf("\n");
-    }
-  }
+  sscanf(argv[1], "%x", &addr);
+  inaddr.s_addr = htonl(addr);
+  printf("%s\n", inet_ntoa(inaddr));
+
+  exit(0);
 }
