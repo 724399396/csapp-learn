@@ -43,7 +43,7 @@ void doit(int fd)
   rio_t rio;
 
   /* Read request line and header */
-  Rio_readinitb(&rid, fd);
+  Rio_readinitb(&rio, fd);
   Rio_readlineb(&rio, buf, MAXLINE);
   sscanf(buf, "%s %s %s", method, uri, version);
   if (strcasecmp(method, "GET")) {
@@ -70,7 +70,7 @@ void doit(int fd)
     serve_static(fd, filename, sbuf.st_size);
   }
   else { /* Serve dynamic content */
-    if (!(S_ISREG(sbuf.st_mode)) || !(S_IXUSR & st.st_mode)) {
+    if (!(S_ISREG(sbuf.st_mode)) || !(S_IXUSR & sbuf.st_mode)) {
       clienterror(fd, filename, "403", "Forbidden",
                   "Tiny couldn't run the CGI program");
       return;
@@ -149,12 +149,12 @@ void serve_static(int fd, char *filename, int filesize)
   sprintf(buf, "HTTP/1.0 200 OK\r\n");
   sprintf(buf, "%sServer:Tiny Web Server\r\n", buf);
   sprintf(buf, "%sContent-length: %d\r\n", buf, filesize);
-  sprintf(buf, "%sContent-type: %s\r\n\r\n", filetype);
+  sprintf(buf, "%sContent-type: %s\r\n\r\n", buf, filetype);
   Rio_writen(fd, buf, strlen(buf));
 
   /* Send response body to client */
   srcfd = Open(filename, O_RDONLY, 0);
-  srcp = Mmap(0, filesize, PORT_READ, MAP_PRIVATE, srcfd, 0);
+  srcp = Mmap(0, filesize, PROT_READ, MAP_PRIVATE, srcfd, 0);
   Close(srcfd);
   Rio_writen(fd, srcp, filesize);
   Munmap(srcp, filesize);
